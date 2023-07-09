@@ -4,6 +4,12 @@
 
 
 ;; Helm configuration
+
+(use-package helm-icons
+  :ensure t
+  :init (helm-icons-enable)
+  :config (setq helm-icons-provider 'all-the-icons))
+
 (use-package helm
   :init
   (helm-mode 1)
@@ -48,7 +54,7 @@
 	     lsp)
 
 
-(use-package lsp-ui :commands lsp-ui-mode)
+(use-package lsp-ui :ensure t :commands lsp-ui-mode)
 (use-package helm-lsp :ensure t :commands helm-lsp-workspace-symbol)
 
 (use-package company
