@@ -2,27 +2,38 @@
 ;;; Commentary:
 ;;; Code:
 
+;; Ivy (counsel)
+(use-package counsel
+  :after ivy
+  :config (counsel-mode))
 
-;; Helm configuration
-
-(use-package helm-icons
-  :ensure t
-  :init (helm-icons-enable)
-  :config (setq helm-icons-provider 'all-the-icons))
-
-(use-package helm
-  :init
-  (helm-mode 1)
+(use-package ivy
   :bind
-  (("M-x"     . helm-M-x) ;; Evaluate functions
-   ("C-x C-f" . helm-find-files) ;; Open or create files
-   ("C-x b"   . helm-mini) ;; Select buffers
-   ("C-x C-r" . helm-recentf) ;; Select recently saved files
-   ("C-c i"   . helm-imenu) ;; Select document heading
-   ("M-y"     . helm-show-kill-ring) ;; Show the kill ring
-   :map helm-map
-   ("C-z" . helm-select-action)
-   ("<tab>" . helm-execute-persistent-action)))
+  ;; ivy-resume resumes the last Ivy-based completion.
+  (("C-c C-r" . ivy-resume)
+   ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "(%d/%d) ")
+  (setq enable-recursive-minibuffers t)
+  :config
+  (ivy-mode))
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package ivy-rich
+  :after ivy
+  :ensure t
+  :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
+  :custom
+  (ivy-virtual-abbreviate 'full
+   ivy-rich-switch-buffer-align-virtual-buffer t
+   ivy-rich-path-style 'abbrev)
+  :config
+  (ivy-set-display-transformer 'ivy-switch-buffer
+                               'ivy-rich-switch-buffer-transformer))
 
 ;; Auto Complete Parenthesis
 (use-package smartparens
