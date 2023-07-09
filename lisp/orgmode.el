@@ -12,6 +12,7 @@
 (require 'org-tempo)
 
 (use-package rainbow-mode
+  :ensure t
   :hook org-mode prog-mode)
 
 (provide 'orgmode)
