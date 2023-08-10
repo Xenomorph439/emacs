@@ -6,7 +6,7 @@
     :init (add-hook 'org-mode-hook 'toc-org-enable))
 
 (add-hook 'org-mode-hook 'org-indent-mode)
-(use-package org-bullets)
+(use-package org-bullets :ensure t)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
 (require 'org-tempo)
