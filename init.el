@@ -2,15 +2,24 @@
 ;;; Commentary:
 ;;; Code:
 
+;; TODO: MOVE AWAY FROM use-package (cause can't understand what it doing)
+
 (add-to-list 'load-path (concat user-emacs-directory "lisp"))
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (setq inhibit-startup-message t)
 (global-display-line-numbers-mode 1)
+(auto-save-mode -1)
+(setq make-backup-files nil)
+
+;; Setup path
+(setq exec-path (append exec-path (list (expand-file-name "~/go/bin"))))
 
 ;; Disable backup
 (setq make-backup-files nil)
+
+(put 'downcase-region 'disabled nil)
 
 ;; Setup packages
 (require 'package)
@@ -43,23 +52,18 @@
   (global-set-key (kbd "M-o") 'ace-window))
 
 ;; Load Color Scheme
-(use-package catppuccin-theme
-  :ensure t
-  :config (setq catppuccin-flavor 'mocha)
-  :init (load-theme 'catppuccin :no-confirm))
+;; (use-package catppuccin-theme
+;;   :ensure t
+;;   :config (setq catppuccin-flavor 'mocha)
+;;   :init (load-theme 'catppuccin :no-confirm))
+
+(load-theme 'modus-vivendi :no-confirm)
 
 ;; set default indentation
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq-default tab-stop-list '(4 8))
 (setq-default standard-indent 4)
-
-;; Go Major Mode
-(use-package go-mode
-  :ensure t
-  :custom
-  (go-ts-mode-indent-offset 4))
-;;; Completions
 
 ;; Ivy (Counsel) -> emacs commands remade for ivy
 (use-package counsel
@@ -89,18 +93,10 @@
   :after ivy
   :ensure t
   :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
- )
+  )
 
-;; Auto Complete Parenthesis
-(use-package smartparens
-  :ensure t
-  :diminish smartparens-mode ;; Do not show in modeline
-  :init
-  (require 'smartparens-config)
-  :config
-  (smartparens-global-mode t) ;; These options can be t or nil.
-  (show-smartparens-global-mode t)
-  (setq sp-show-pair-from-inside t))
+(use-package reformatter
+  :ensure t)
 
 ;; Completions
 (use-package company
@@ -122,6 +118,20 @@
   (go-ts-mode . lsp)
   :commands
   lsp)
+
+(use-package go-ts-mode
+  :ensure t
+  :mode "\\.go\\'"
+  :custom
+  (go-ts-mode-indent-offset tab-width)
+  :config
+    (reformatter-define golines-format
+      :program "golines"
+      :args '("--max-len=100")
+      :group 'go)
+    :hook
+    (go-ts-mode . golines-format-on-save-mode)
+    (go-ts-mode . (lambda () (setq tab-width 8))))
 
 ;; treesitter
 (require 'treesit)
@@ -155,8 +165,6 @@
 	(json-mode . json-ts-mode)
 	(typescript-mode . typescript-ts-mode)))
 
-(add-hook 'go-mode-hook #'go-ts-mode)
-
 ;;; Zig language mode
 (use-package zig-mode :ensure t)
 
@@ -164,21 +172,19 @@
 
 (use-package lsp-ui :ensure t :commands lsp-ui-mode)
 
-;; The greatest git GUI ever
+;; Magit -> The greatest git UI
+(use-package magit :ensure t)
 
 ;; set font
 (add-to-list 'default-frame-alist
-              '(font . "FantasqueSansM Nerd Font-13"))
+              '(font . "CommitMono-14"))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(ace-window all-the-icons-ivy-rich catppuccin-theme company counsel
-                flycheck format-all go-mode lsp-ui smartparens
-                zig-mode)))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
