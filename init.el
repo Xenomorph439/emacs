@@ -4,22 +4,18 @@
 
 ;; TODO: MOVE AWAY FROM use-package (cause can't understand what it doing)
 
-(add-to-list 'load-path (concat user-emacs-directory "lisp"))
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(setq inhibit-startup-message t)
 (global-display-line-numbers-mode 1)
 (auto-save-mode -1)
 (setq make-backup-files nil)
 
+;; enable some commands
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+
 ;; Setup path
 (setq exec-path (append exec-path (list (expand-file-name "~/go/bin"))))
-
-;; Disable backup
-(setq make-backup-files nil)
-
-(put 'downcase-region 'disabled nil)
 
 ;; Setup packages
 (require 'package)
@@ -32,13 +28,7 @@
 ;; intall use package
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
-
 (require 'use-package)
-
-;; Autoformatting
-(use-package format-all
-  :ensure t
-  :init (format-all-mode))
 
 ;; Icons
 (use-package all-the-icons
@@ -56,8 +46,6 @@
 ;;   :ensure t
 ;;   :config (setq catppuccin-flavor 'mocha)
 ;;   :init (load-theme 'catppuccin :no-confirm))
-
-(load-theme 'modus-vivendi :no-confirm)
 
 ;; set default indentation
 (setq-default indent-tabs-mode nil)
@@ -174,10 +162,6 @@
 
 ;; Magit -> The greatest git UI
 (use-package magit :ensure t)
-
-;; set font
-(add-to-list 'default-frame-alist
-              '(font . "CommitMono-14"))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
